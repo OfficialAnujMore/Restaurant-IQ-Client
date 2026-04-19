@@ -4,6 +4,7 @@ const LAYERS = [
   { key: 'malls', label: 'Shopping Malls', color: '#a855f7' },
   { key: 'top5', label: 'Top 5 Locations', color: '#22c55e' },
   { key: 'grid', label: 'Candidate Grid', color: '#64748b' },
+  { key: 'rentPressure', label: 'Rent Pressure', color: '#a855f7' },
 ];
 
 export default function LayerToggle({ layers = {}, onToggle }) {

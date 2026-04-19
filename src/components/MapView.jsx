@@ -3,6 +3,7 @@ import ArcGISMap from '@arcgis/core/Map.js';
 import ArcGISMapView from '@arcgis/core/views/MapView.js';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer.js';
 import Graphic from '@arcgis/core/Graphic.js';
+import { getRentPressure } from '../services/api.js';
 
 const RANK_COLORS = ['#22c55e', '#84cc16', '#eab308', '#f97316', '#ef4444'];
 
@@ -27,7 +28,7 @@ function catchmentPolygon(lng, lat, radiusMiles = 3, points = 36) {
   return ring;
 }
 
-export default function MapView({ results, activeLocation, layerVisibility, loading, city }) {
+export default function MapView({ results, activeLocation, layerVisibility, loading, city, mapRef }) {
   const containerRef = useRef(null);
   const viewRef = useRef(null);
   const layersRef = useRef({});
@@ -43,11 +44,14 @@ export default function MapView({ results, activeLocation, layerVisibility, load
     const catchmentLayer = new GraphicsLayer({ id: 'catchment' });
     const top5Layer = new GraphicsLayer({ id: 'top5' });
     const labelLayer = new GraphicsLayer({ id: 'labels' });
+    const rentPressureLayer = new GraphicsLayer({ id: 'rentPressure', title: 'rentPressure' });
+    rentPressureLayer.visible = false;
 
     const map = new ArcGISMap({
       basemap: 'dark-gray-vector',
       layers: [
         gridLayer,
+        rentPressureLayer,
         competitorLayer,
         universityLayer,
         mallLayer,
@@ -73,14 +77,82 @@ export default function MapView({ results, activeLocation, layerVisibility, load
       catchmentLayer,
       top5Layer,
       labelLayer,
+      rentPressure: rentPressureLayer,
     };
+
+    if (mapRef) {
+      mapRef.current = {
+        loadRentHeatmap: async (lat, lng) => {
+          const data = await getRentPressure({ lat, lng });
+          const layer = layersRef.current.rentPressure;
+          if (!layer) return { success: false, pointCount: 0 };
+          layer.removeAll();
+          layer.visible = true;
+
+          data.pressureData.forEach((point) => {
+            let color;
+            if (point.pressureIndex < 0.33) color = [34, 197, 94, 130];
+            else if (point.pressureIndex < 0.66) color = [234, 179, 8, 130];
+            else color = [239, 68, 68, 150];
+
+            const bar = point.pressureIndex < 0.33
+              ? '#22c55e'
+              : point.pressureIndex < 0.66
+                ? '#eab308'
+                : '#ef4444';
+
+            const content = `
+              <div style="font-family:sans-serif;padding:8px">
+                <div style="font-size:1.2rem;font-weight:bold;margin-bottom:8px">
+                  Pressure Index: ${point.pressureScore}/100
+                </div>
+                <table style="width:100%;border-collapse:collapse;font-size:0.85rem">
+                  <tr>
+                    <td style="padding:4px 0;color:#64748b">Median Income</td>
+                    <td style="text-align:right;font-weight:600">$${(point.raw.income || 0).toLocaleString()}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:4px 0;color:#64748b">Total Population</td>
+                    <td style="text-align:right;font-weight:600">${(point.raw.totalPop || 0).toLocaleString()}</td>
+                  </tr>
+                </table>
+                <div style="margin-top:8px;padding:6px;background:#1e293b;border-radius:4px">
+                  <div style="font-size:0.75rem;color:#94a3b8">Pressure bar:</div>
+                  <div style="background:#334155;border-radius:4px;height:6px;margin-top:4px">
+                    <div style="width:${point.pressureScore}%;height:100%;border-radius:4px;background:${bar}"></div>
+                  </div>
+                </div>
+                <p style="margin-top:8px;font-size:0.7rem;color:#64748b;font-style:italic">
+                  Higher index = higher estimated commercial rent pressure.
+                  Source: US Census ACS 5-year (2022).
+                </p>
+              </div>`;
+
+            layer.add(
+              new Graphic({
+                geometry: { type: 'point', latitude: point.lat, longitude: point.lng },
+                symbol: { type: 'simple-marker', color, size: 16, outline: null },
+                attributes: point,
+                popupTemplate: {
+                  title: 'Leasing Pressure Estimate',
+                  content,
+                },
+              })
+            );
+          });
+
+          return { success: true, pointCount: data.pointCount };
+        },
+      };
+    }
 
     return () => {
       view?.destroy();
       viewRef.current = null;
       layersRef.current = {};
+      if (mapRef) mapRef.current = null;
     };
-  }, []);
+  }, [mapRef]);
 
   // Render results
   useEffect(() => {
@@ -257,6 +329,9 @@ export default function MapView({ results, activeLocation, layerVisibility, load
     layers.labelLayer.visible = layerVisibility.top5 !== false;
     layers.catchmentLayer.visible = layerVisibility.top5 !== false;
     layers.gridLayer.visible = layerVisibility.grid === true;
+    if (layers.rentPressure) {
+      layers.rentPressure.visible = layerVisibility.rentPressure ?? false;
+    }
   }, [layerVisibility]);
 
   const info = results
@@ -292,6 +367,16 @@ export default function MapView({ results, activeLocation, layerVisibility, load
             <LegendRow color="#a855f7" label="Mall" shape="diamond" />
             <LegendRow color="#22c55e" label="Drive-time zone" ring />
             <LegendRow color="#22c55e" label="Top 5 Location" />
+          </div>
+          <div className="mt-2 pt-2 border-t border-[#334155]">
+            <div className="text-[0.6rem] uppercase tracking-wider text-slate-500 mb-1">
+              Rent Pressure
+            </div>
+            <div className="flex flex-col gap-1 text-xs text-slate-200">
+              <LegendRow color="#22c55e" label="Low" />
+              <LegendRow color="#eab308" label="Medium" />
+              <LegendRow color="#ef4444" label="High" />
+            </div>
           </div>
         </div>
       )}
