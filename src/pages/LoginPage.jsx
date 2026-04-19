@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { loginAuth } from '../services/api.js';
-import BrandMark from '../components/BrandMark.jsx';
+import Navbar from '../components/Navbar.jsx';
 
 const inputClass =
   'w-full rounded-2xl border border-cyan-100 bg-white/90 px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-cyan-300 focus:ring-4 focus:ring-cyan-100';
@@ -34,34 +34,30 @@ export default function LoginPage() {
   if (authLoading) return null;
   if (user && token) return <Navigate to="/app" replace />;
 
+  const navItems = [
+    {
+      label: 'Home',
+      to: '/',
+      className:
+        'rounded-full border border-slate-900/12 bg-white/28 px-4 py-2 text-xs font-medium text-slate-900 transition hover:bg-white/40',
+      mobileClassName:
+        'rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white',
+    },
+    {
+      label: 'Create Account',
+      to: '/register',
+      className:
+        'rounded-full border border-white/40 bg-white/88 px-4 py-2 text-xs font-semibold text-cyan-900 shadow-[0_10px_24px_rgba(8,145,178,0.14)] transition hover:bg-white',
+      mobileClassName:
+        'rounded-2xl border border-white/30 bg-white/86 px-4 py-3 text-sm font-semibold text-cyan-900',
+    },
+  ];
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[linear-gradient(180deg,#e7fbff_0%,#dff6f7_35%,#edf8ff_100%)] text-slate-900">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(103,232,249,0.45),transparent_26%),radial-gradient(circle_at_bottom_right,rgba(125,211,252,0.24),transparent_24%)]" />
 
-      <nav className="relative z-10 border-b border-white/50 bg-[linear-gradient(90deg,rgba(7,89,133,0.72)_0%,rgba(8,145,178,0.58)_52%,rgba(236,254,255,0.42)_100%)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link to={user && token ? '/app' : '/'} className="flex items-center gap-3">
-            <BrandMark />
-            <span className="text-base font-semibold tracking-[-0.02em] text-white">
-              RestaurantIQ
-            </span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/"
-              className="rounded-full border border-slate-900/12 bg-white/28 px-4 py-2 text-xs font-medium text-slate-900 transition hover:bg-white/40"
-            >
-              Home
-            </Link>
-            <Link
-              to="/register"
-              className="rounded-full border border-white/40 bg-white/88 px-4 py-2 text-xs font-semibold text-cyan-900 shadow-[0_10px_24px_rgba(8,145,178,0.14)] transition hover:bg-white"
-            >
-              Create Account
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <Navbar brandTo={user && token ? '/app' : '/'} rightItems={navItems} mobileMenuItems={navItems} />
 
       <main className="relative z-10 mx-auto grid min-h-[calc(100vh-73px)] max-w-6xl items-center gap-10 px-6 py-12 lg:grid-cols-[1.08fr_0.92fr]">
         <section className="max-w-xl">

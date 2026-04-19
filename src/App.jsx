@@ -1,12 +1,11 @@
 import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import Sidebar from './components/Sidebar.jsx';
 import MapView from './components/MapView.jsx';
 import LayerToggle from './components/LayerToggle.jsx';
 import InsightsSidebar from './components/InsightsSidebar.jsx';
+import Navbar from './components/Navbar.jsx';
 import { analyzeCity } from './services/api.js';
 import { useAuth } from './context/AuthContext.jsx';
-import BrandMark from './components/BrandMark.jsx';
 
 const BASEMAP_OPTIONS = [
   { id: 'streets-vector', label: 'Streets', accent: '#0891b2' },
@@ -69,85 +68,98 @@ export default function App() {
     setInsightsCollapsed(false);
   }
 
+  const navItems = [
+    {
+      label: 'Home',
+      to: '/',
+      className:
+        'hidden rounded-full border border-slate-900/12 bg-white/28 px-4 py-2 text-xs font-medium text-slate-900 transition hover:bg-white/40 md:inline-flex',
+      mobileClassName:
+        'rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white',
+    },
+    {
+      label: 'Sign Out',
+      type: 'button',
+      onClick: logout,
+      className:
+        'rounded-full border border-[#f4ead7]/70 bg-[#f4ead7] px-4 py-2 text-xs font-semibold text-[#6c5332] shadow-[0_10px_24px_rgba(8,145,178,0.14)] transition hover:bg-[#f8f0e2]',
+      mobileClassName:
+        'rounded-2xl border border-white/30 bg-white/86 px-4 py-3 text-left text-sm font-semibold text-cyan-900',
+    },
+  ];
+
+  const desktopCenter = (
+    <div className="hidden items-center gap-1 rounded-full border border-white/24 bg-white/12 p-1.5 backdrop-blur-sm lg:flex">
+      <span className="pl-2 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-white/70">
+        Map
+      </span>
+      {BASEMAP_OPTIONS.map((opt) => (
+        <button
+          key={opt.id}
+          type="button"
+          onClick={() => setBasemapId(opt.id)}
+          className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${
+            opt.id === basemapId
+              ? 'bg-white/88 text-cyan-900 shadow-[0_10px_24px_rgba(8,145,178,0.14)]'
+              : 'text-white hover:bg-white/16'
+          }`}
+        >
+          <span
+            className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
+            style={{ backgroundColor: opt.accent }}
+          />
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+
+  const mobilePanel = (
+    <div className="border-t border-white/15 px-4 py-3 lg:hidden sm:px-6">
+      <div className="flex items-center gap-1 overflow-x-auto rounded-full border border-white/24 bg-white/12 p-1.5 backdrop-blur-sm">
+        <span className="pl-2 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-white/70">
+          Map
+        </span>
+        {BASEMAP_OPTIONS.map((opt) => (
+          <button
+            key={opt.id}
+            type="button"
+            onClick={() => setBasemapId(opt.id)}
+            className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium whitespace-nowrap transition ${
+              opt.id === basemapId
+                ? 'bg-white/88 text-cyan-900 shadow-[0_10px_24px_rgba(8,145,178,0.14)]'
+                : 'text-white hover:bg-white/16'
+            }`}
+          >
+            <span
+              className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
+              style={{ backgroundColor: opt.accent }}
+            />
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[linear-gradient(180deg,#e7fbff_0%,#dff6f7_32%,#edf8ff_100%)] text-slate-900">
-      <header className="absolute inset-x-0 top-0 z-20 border-b border-white/50 bg-[linear-gradient(90deg,rgba(7,89,133,0.72)_0%,rgba(8,145,178,0.58)_52%,rgba(236,254,255,0.42)_100%)] backdrop-blur-xl">
-        <div className="flex h-[73px] items-center justify-between gap-4 px-4 sm:px-6">
-          <Link to="/" className="flex shrink-0 items-center gap-3">
-            <BrandMark />
-            <span className="text-base font-semibold tracking-[-0.02em] text-white">
-              RestaurantIQ
-            </span>
-          </Link>
-
-          <div className="hidden items-center gap-1 rounded-full border border-white/24 bg-white/12 p-1.5 backdrop-blur-sm lg:flex">
-            <span className="pl-2 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-white/70">
-              Map
-            </span>
-            {BASEMAP_OPTIONS.map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => setBasemapId(opt.id)}
-                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${
-                  opt.id === basemapId
-                    ? 'bg-white/88 text-cyan-900 shadow-[0_10px_24px_rgba(8,145,178,0.14)]'
-                    : 'text-white hover:bg-white/16'
-                }`}
-              >
-                <span
-                  className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
-                  style={{ backgroundColor: opt.accent }}
-                />
-                {opt.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex shrink-0 items-center gap-3">
-            <span className="hidden text-xs font-medium text-slate-900 sm:inline">{user?.name}</span>
-            <Link
-              to="/"
-              className="hidden rounded-full border border-slate-900/12 bg-white/28 px-4 py-2 text-xs font-medium text-slate-900 transition hover:bg-white/40 md:inline-flex"
-            >
-              Home
-            </Link>
-            <button
-              type="button"
-              onClick={logout}
-              className="rounded-full border border-[#f4ead7]/70 bg-[#f4ead7] px-4 py-2 text-xs font-semibold text-[#6c5332] shadow-[0_10px_24px_rgba(8,145,178,0.14)] transition hover:bg-[#f8f0e2]"
-            >
-              Sign Out
-            </button>
-          </div>
-        </div>
-
-        <div className="border-t border-white/15 px-4 py-3 lg:hidden sm:px-6">
-          <div className="flex items-center gap-1 overflow-x-auto rounded-full border border-white/24 bg-white/12 p-1.5 backdrop-blur-sm">
-            <span className="pl-2 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-white/70">
-              Map
-            </span>
-          {BASEMAP_OPTIONS.map((opt) => (
-            <button
-              key={opt.id}
-              type="button"
-              onClick={() => setBasemapId(opt.id)}
-              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium whitespace-nowrap transition ${
-                opt.id === basemapId
-                  ? 'bg-white/88 text-cyan-900 shadow-[0_10px_24px_rgba(8,145,178,0.14)]'
-                  : 'text-white hover:bg-white/16'
-              }`}
-            >
-              <span
-                className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
-                style={{ backgroundColor: opt.accent }}
-              />
-              {opt.label}
-            </button>
-          ))}
-        </div>
-        </div>
-      </header>
+      <Navbar
+        containerClassName="absolute inset-x-0 top-0 z-20"
+        wrapperClassName="flex h-[73px] items-center justify-between gap-4 px-4 sm:px-6"
+        brandTextClassName="text-white"
+        desktopCenter={desktopCenter}
+        mobilePanel={mobilePanel}
+        rightItems={[
+          {
+            label: user?.name || '',
+            type: 'text',
+            className: 'hidden text-xs font-medium text-slate-900 sm:inline',
+          },
+          ...navItems,
+        ]}
+        mobileMenuItems={navItems}
+      />
 
       <div className="flex min-h-0 flex-1 pt-[118px] lg:pt-[73px]">
         {/* Left sidebar */}
@@ -203,9 +215,9 @@ export default function App() {
 
         {/* Right insights sidebar */}
         {insightTarget && (
-          <div className={`relative flex transition-all duration-300 ease-in-out ${insightsCollapsed ? 'w-0' : 'w-[320px] xl:w-[348px]'} shrink-0`}>
+          <div className={`relative flex min-h-0 transition-all duration-300 ease-in-out ${insightsCollapsed ? 'w-0' : 'w-[320px] xl:w-[348px]'} shrink-0`}>
             <div
-              className={`absolute inset-0 transition-opacity duration-200 ${
+              className={`absolute inset-0 min-h-0 transition-opacity duration-200 ${
                 insightsCollapsed ? 'pointer-events-none opacity-0' : 'opacity-100'
               }`}
             >

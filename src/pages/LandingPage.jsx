@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
-import BrandMark from '../components/BrandMark.jsx';
+import Navbar from '../components/Navbar.jsx';
 
 const featureSteps = [
   {
@@ -50,135 +50,77 @@ const previewPins = [
 export default function LandingPage() {
   const featuresRef = useRef(null);
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
   const { user, token, logout } = useAuth();
   const isAuthenticated = !!user && !!token;
+
+  const rightItems = isAuthenticated
+    ? [
+        {
+          label: 'Product',
+          type: 'button',
+          onClick: () => featuresRef.current?.scrollIntoView({ behavior: 'smooth' }),
+          className:
+            'rounded-full border border-white/28 bg-white/12 px-4 py-2 text-xs font-medium text-white transition hover:bg-white/20',
+          mobileClassName:
+            'rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-left text-sm text-white',
+        },
+        {
+          label: 'Open Dashboard',
+          to: '/app',
+          className:
+            'rounded-full border border-white/30 bg-white/14 px-4 py-2 text-xs font-medium text-white transition hover:bg-white/22',
+          mobileClassName:
+            'rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white',
+        },
+        {
+          label: 'Sign Out',
+          type: 'button',
+          onClick: logout,
+          className:
+            'rounded-full border border-white/40 bg-white/88 px-4 py-2 text-xs font-semibold text-cyan-900 shadow-[0_10px_24px_rgba(8,145,178,0.14)] transition hover:bg-white',
+          mobileClassName:
+            'rounded-2xl border border-white/30 bg-white/86 px-4 py-3 text-left text-sm font-semibold text-cyan-900',
+        },
+      ]
+    : [
+        {
+          label: 'Product',
+          type: 'button',
+          onClick: () => featuresRef.current?.scrollIntoView({ behavior: 'smooth' }),
+          className:
+            'rounded-full border border-white/28 bg-white/12 px-4 py-2 text-xs font-medium text-white transition hover:bg-white/20',
+          mobileClassName:
+            'rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-left text-sm text-white',
+        },
+        {
+          label: 'Login',
+          to: '/login',
+          className:
+            'rounded-full border border-white/30 bg-white/14 px-4 py-2 text-xs font-medium text-white transition hover:bg-white/22',
+          mobileClassName:
+            'rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white',
+        },
+        {
+          label: 'Get Started',
+          to: '/register',
+          className:
+            'rounded-full border border-white/40 bg-white/88 px-4 py-2 text-xs font-semibold text-cyan-900 shadow-[0_10px_24px_rgba(8,145,178,0.14)] transition hover:bg-white',
+          mobileClassName:
+            'rounded-2xl border border-white/30 bg-white/86 px-4 py-3 text-sm font-semibold text-cyan-900',
+        },
+      ];
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#f8fcfd] text-slate-900">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(125,211,252,0.22),transparent_18%),radial-gradient(circle_at_top_right,rgba(56,189,248,0.12),transparent_18%),linear-gradient(180deg,#f8fcfd_0%,#f3fbfc_48%,#ffffff_100%)]" />
       <div className="absolute inset-x-0 top-0 h-[520px] bg-[linear-gradient(180deg,rgba(8,145,178,0.08)_0%,rgba(236,254,255,0.12)_100%)]" />
 
-      <nav className="sticky top-0 z-50 border-b border-white/50 bg-[linear-gradient(90deg,rgba(7,89,133,0.72)_0%,rgba(8,145,178,0.58)_52%,rgba(236,254,255,0.42)_100%)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link to={isAuthenticated ? '/app' : '/'} className="flex items-center gap-3">
-            <BrandMark />
-            <span className="text-base font-semibold tracking-[-0.02em] text-white">
-              RestaurantIQ
-            </span>
-          </Link>
-
-          <div className="hidden items-center gap-3 md:flex">
-            <button
-              type="button"
-              onClick={() => featuresRef.current?.scrollIntoView({ behavior: 'smooth' })}
-              className="rounded-full border border-white/28 bg-white/12 px-4 py-2 text-xs font-medium text-white transition hover:bg-white/20"
-            >
-              Product
-            </button>
-            {isAuthenticated ? (
-              <>
-                <Link
-                  to="/app"
-                  className="rounded-full border border-white/30 bg-white/14 px-4 py-2 text-xs font-medium text-white transition hover:bg-white/22"
-                >
-                  Open Dashboard
-                </Link>
-                <button
-                  type="button"
-                  onClick={logout}
-                  className="rounded-full border border-white/40 bg-white/88 px-4 py-2 text-xs font-semibold text-cyan-900 shadow-[0_10px_24px_rgba(8,145,178,0.14)] transition hover:bg-white"
-                >
-                  Sign Out
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="rounded-full border border-white/30 bg-white/14 px-4 py-2 text-xs font-medium text-white transition hover:bg-white/22"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="rounded-full border border-white/40 bg-white/88 px-4 py-2 text-xs font-semibold text-cyan-900 shadow-[0_10px_24px_rgba(8,145,178,0.14)] transition hover:bg-white"
-                >
-                  Get Started
-                </Link>
-              </>
-            )}
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setMenuOpen((value) => !value)}
-            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/25 bg-white/10 text-white transition hover:bg-white/16 md:hidden"
-            aria-label="Toggle menu"
-          >
-            <span className="flex flex-col gap-1">
-              <span className="block h-0.5 w-4 rounded-full bg-current" />
-              <span className="block h-0.5 w-4 rounded-full bg-current" />
-              <span className="block h-0.5 w-4 rounded-full bg-current" />
-            </span>
-          </button>
-        </div>
-
-        {menuOpen && (
-          <div className="border-t border-white/20 bg-[rgba(14,116,144,0.38)] px-6 py-4 md:hidden">
-            <div className="flex flex-col gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setMenuOpen(false);
-                  featuresRef.current?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-left text-sm text-white"
-              >
-                Product
-              </button>
-              {isAuthenticated ? (
-                <>
-                  <Link
-                    to="/app"
-                    onClick={() => setMenuOpen(false)}
-                    className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white"
-                  >
-                    Open Dashboard
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      logout();
-                    }}
-                    className="rounded-2xl border border-white/30 bg-white/86 px-4 py-3 text-left text-sm font-semibold text-cyan-900"
-                  >
-                    Sign Out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    onClick={() => setMenuOpen(false)}
-                    className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    onClick={() => setMenuOpen(false)}
-                    className="rounded-2xl border border-white/30 bg-white/86 px-4 py-3 text-sm font-semibold text-cyan-900"
-                  >
-                    Get Started
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-      </nav>
+      <Navbar
+        containerClassName="sticky top-0 z-50"
+        brandTo={isAuthenticated ? '/app' : '/'}
+        rightItems={rightItems}
+        mobileMenuItems={rightItems}
+      />
 
       <main className="relative z-10">
         <section className="mx-auto grid max-w-6xl items-center gap-14 px-6 pb-18 pt-16 lg:min-h-[calc(100vh-81px)] lg:grid-cols-[1fr_1.02fr] lg:pt-20">
