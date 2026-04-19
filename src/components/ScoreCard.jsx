@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import ScoreBar from './ScoreBar.jsx';
 import { saveLocation } from '../services/api.js';
-import { useInsights } from '../hooks/useInsights.js';
-import InsightPanel from './InsightPanel.jsx';
 
 const RANK_COLORS = {
   1: '#22c55e',
@@ -12,14 +10,9 @@ const RANK_COLORS = {
   5: '#ef4444',
 };
 
-export default function ScoreCard({ location, isActive, onClick, context = {}, onLoadHeatmap }) {
+export default function ScoreCard({ location, isActive, onClick, context = {}, onLoadHeatmap, onOpenInsights }) {
   const [saveStatus, setSaveStatus] = useState(null);
   const [heatmapStatus, setHeatmapStatus] = useState('idle');
-  const {
-    insights, loading: insightsLoading, error: insightsError,
-    cached, parseError, provider,
-    generate, regenerate, dismiss, isVisible,
-  } = useInsights(location, context);
   const rank = location.rank ?? '-';
   const color = RANK_COLORS[rank] || '#64748b';
   const s = location.scores || {};
@@ -152,28 +145,11 @@ export default function ScoreCard({ location, isActive, onClick, context = {}, o
 
       <button
         type="button"
-        onClick={(e) => { e.stopPropagation(); generate(); }}
+        onClick={(e) => { e.stopPropagation(); onOpenInsights?.({ location, context }); }}
         className="mt-2 w-full rounded-[10px] border border-purple-100 bg-purple-50/60 px-3 py-2.5 text-xs font-medium text-purple-700 transition hover:border-purple-200 hover:bg-white hover:text-purple-900"
       >
-        {insightsLoading
-          ? 'Analyzing...'
-          : isVisible && insights
-            ? 'Hide Insights'
-            : '✦ Generate Insights'}
+        ✦ Generate Insights
       </button>
-
-      {isVisible && (
-        <InsightPanel
-          insights={insights}
-          loading={insightsLoading}
-          error={insightsError}
-          cached={cached}
-          parseError={parseError}
-          provider={provider}
-          onRegenerate={(e) => { if (e) e.stopPropagation(); regenerate(); }}
-          onDismiss={(e) => { if (e) e.stopPropagation(); dismiss(); }}
-        />
-      )}
 
       {onLoadHeatmap && (
         <button

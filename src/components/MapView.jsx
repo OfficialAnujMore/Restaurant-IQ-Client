@@ -145,12 +145,10 @@ function popupHtml(loc) {
   `;
 }
 
-export default function MapView({ results, activeLocation, layerVisibility, loading, city, mapRef }) {
+export default function MapView({ results, activeLocation, layerVisibility, loading, city, mapRef, basemapId = 'streets-vector' }) {
   const containerRef = useRef(null);
   const viewRef = useRef(null);
   const layersRef = useRef({});
-  const [basemapId, setBasemapId] = useState('streets-vector');
-  const [themeMinimized, setThemeMinimized] = useState(false);
   const [legendMinimized, setLegendMinimized] = useState(false);
   const [summaryMinimized, setSummaryMinimized] = useState(false);
 
@@ -454,61 +452,9 @@ export default function MapView({ results, activeLocation, layerVisibility, load
         count: results.top5?.length ?? 0,
       }
     : null;
-  const activeBasemap = BASEMAP_OPTIONS.find((option) => option.id === basemapId) ?? BASEMAP_OPTIONS[0];
-
   return (
     <div className="absolute inset-0 overflow-hidden bg-[#dff6f7]">
       <div ref={containerRef} className="absolute inset-0" />
-
-      <div className="absolute right-5 top-5 z-10 w-[270px] rounded-[16px] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.76)_0%,rgba(236,254,255,0.72)_100%)] px-3 py-3 shadow-[0_20px_40px_rgba(8,145,178,0.18)] backdrop-blur-xl">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
-              Map Theme
-            </div>
-            <div className="mt-1 text-base font-semibold tracking-[-0.03em] text-slate-900">
-              {activeBasemap.label}
-            </div>
-            <div className="mt-0.5 text-[0.68rem] text-slate-500">{activeBasemap.id}</div>
-          </div>
-          <button
-            type="button"
-            onClick={() => setThemeMinimized((value) => !value)}
-            className="rounded-lg border border-cyan-100 bg-white/80 px-2 py-1 text-[0.8rem] font-semibold leading-none text-slate-500 transition hover:border-cyan-200 hover:text-slate-800"
-            aria-label={themeMinimized ? 'Expand map theme' : 'Minimize map theme'}
-          >
-            {themeMinimized ? '+' : '−'}
-          </button>
-        </div>
-
-        {!themeMinimized && (
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            {BASEMAP_OPTIONS.map((option) => {
-              const active = option.id === basemapId;
-              return (
-                <button
-                  key={option.id}
-                  type="button"
-                  onClick={() => setBasemapId(option.id)}
-                  className={`rounded-xl border px-3 py-2 text-left transition ${
-                    active
-                      ? 'border-cyan-200 bg-cyan-50 shadow-[0_12px_24px_rgba(8,145,178,0.12)]'
-                      : 'border-cyan-100 bg-white/82 hover:border-cyan-200 hover:bg-white'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="inline-block h-2.5 w-2.5 rounded-full"
-                      style={{ backgroundColor: option.accent }}
-                    />
-                    <span className="text-xs font-semibold text-slate-900">{option.label}</span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
 
       {info && (
         <div className="absolute left-5 top-5 z-10 max-w-[300px] rounded-[16px] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.74)_0%,rgba(236,254,255,0.7)_100%)] px-4 py-3 shadow-[0_20px_40px_rgba(8,145,178,0.18)] backdrop-blur-xl">

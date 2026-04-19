@@ -50,6 +50,7 @@ export default function Sidebar({
   activeLocation,
   onSelectLocation,
   onLoadHeatmap,
+  onOpenInsights,
 }) {
   const [tab, setTab] = useState('search');
   const [city, setCity] = useState('');
@@ -157,7 +158,7 @@ export default function Sidebar({
                 Menu Items (select all that apply)
               </label>
               <div className="rounded-[10px] border border-cyan-100 bg-white/96 px-2.5 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.88)]">
-                <div className="flex flex-wrap items-center gap-2">
+                {/* <div className="flex flex-wrap items-center gap-2">
                   {menuItems.map((item) => (
                     <button
                       key={item}
@@ -172,7 +173,7 @@ export default function Sidebar({
                   {menuItems.length === 0 && (
                     <span className="text-xs text-slate-400">Select menu items below</span>
                   )}
-                </div>
+                </div> */}
                 <div className="mt-2 grid grid-cols-2 gap-2">
                   {availableMenuItems.map((item) => {
                     const active = menuItems.includes(item);
@@ -270,6 +271,7 @@ export default function Sidebar({
                     onClick={() => onSelectLocation(loc)}
                     context={{ city: results.city, category: results.category }}
                     onLoadHeatmap={onLoadHeatmap}
+                    onOpenInsights={onOpenInsights}
                   />
                 ))}
               </div>
