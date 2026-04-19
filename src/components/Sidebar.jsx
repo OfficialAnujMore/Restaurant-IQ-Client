@@ -21,9 +21,9 @@ const MENU_BY_CATEGORY = {
 };
 
 const STRATEGIES = [
-  { value: 'gap', label: '🎯 Gap Finder' },
-  { value: 'cluster', label: '🔥 Join Hotspot' },
-  { value: 'both', label: '⚖️ Show Both' },
+  { value: 'gap', label: 'Gap Finder' },
+  { value: 'cluster', label: 'Join Hotspot' },
+  { value: 'both', label: 'Show Both' },
 ];
 
 const STRATEGY_HELP = {
@@ -77,19 +77,19 @@ export default function Sidebar({
   }
 
   const inputClass =
-    'w-full rounded-xl border border-cyan-100 bg-white/92 px-4 py-2.5 text-sm text-slate-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.88)] outline-none transition focus:border-cyan-300 focus:ring-4 focus:ring-cyan-100';
+    'w-full rounded-[10px] border border-cyan-100 bg-white/96 px-4 py-2.5 text-sm text-slate-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.88)] outline-none transition focus:border-cyan-300 focus:ring-4 focus:ring-cyan-100';
   const sectionClass =
-    'rounded-[18px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.78)_0%,rgba(236,254,255,0.72)_100%)] p-4 shadow-[0_18px_34px_rgba(8,145,178,0.14)] backdrop-blur-xl';
+    'rounded-[16px] border border-cyan-100/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(239,252,255,0.78)_100%)] p-4 shadow-[0_16px_28px_rgba(8,145,178,0.12)] backdrop-blur-xl';
 
   return (
-    <div className="flex flex-col gap-3 p-4">
-      <header className={sectionClass}>
+    <div className="flex flex-col gap-3 p-3">
+      {/* <header className={sectionClass}>
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#0891b2_0%,#22c1c3_100%)] text-base text-white shadow-[0_16px_26px_rgba(34,193,195,0.24)]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[linear-gradient(135deg,#0891b2_0%,#22c1c3_100%)] text-base text-white shadow-[0_16px_26px_rgba(34,193,195,0.24)]">
             🍔
           </div>
           <div>
-            <h1 className="text-[1.45rem] font-semibold tracking-[-0.03em] text-slate-900">
+            <h1 className="text-[1.35rem] font-semibold tracking-[-0.03em] text-slate-900">
               RestaurantIQ
             </h1>
             <p className="mt-0.5 text-xs text-slate-500">
@@ -97,18 +97,18 @@ export default function Sidebar({
             </p>
           </div>
         </div>
-      </header>
+      </header> */}
 
-      <div className="flex gap-1 rounded-full border border-cyan-100/80 bg-white/72 p-1 shadow-[0_10px_24px_rgba(8,145,178,0.12)]">
+      <div className="flex gap-1 rounded-[14px] border border-cyan-100/80 bg-white/72 p-1 shadow-[0_10px_24px_rgba(8,145,178,0.12)]">
         {[
-          { key: 'search', label: '🔍 Search' },
-          { key: 'saved', label: '📌 Saved' },
+          { key: 'search', label: 'Search' },
+          { key: 'saved', label: 'Saved' },
         ].map((t) => (
           <button
             key={t.key}
             type="button"
             onClick={() => setTab(t.key)}
-            className={`flex-1 rounded-full px-3 py-2 text-xs font-medium transition ${
+            className={`flex-1 rounded-[12px] px-3 py-2 text-xs font-medium transition ${
               tab === t.key
                 ? 'bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_100%)] text-white shadow-[0_10px_20px_rgba(8,145,178,0.2)]'
                 : 'text-slate-500 hover:text-slate-900'
@@ -156,28 +156,42 @@ export default function Sidebar({
               <label className="block text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
                 Menu Items (select all that apply)
               </label>
-              <div className="grid grid-cols-2 gap-2">
-                {availableMenuItems.map((item) => {
-                  const active = menuItems.includes(item);
-                  return (
-                    <label
+              <div className="rounded-[10px] border border-cyan-100 bg-white/96 px-2.5 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.88)]">
+                <div className="flex flex-wrap items-center gap-2">
+                  {menuItems.map((item) => (
+                    <button
                       key={item}
-                      className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 text-xs font-medium transition ${
-                        active
-                          ? 'border-cyan-200 bg-cyan-50 text-cyan-800 shadow-[0_10px_24px_rgba(34,211,238,0.16)]'
-                          : 'border-cyan-100 bg-white/88 text-slate-600 hover:border-cyan-200 hover:text-slate-900'
-                      }`}
+                      type="button"
+                      onClick={() => toggleMenuItem(item)}
+                      className="inline-flex items-center gap-1 rounded-[8px] border border-cyan-200 bg-cyan-50 px-2.5 py-1 text-xs font-medium text-cyan-800"
                     >
-                      <input
-                        type="checkbox"
-                        checked={active}
-                        onChange={() => toggleMenuItem(item)}
-                        className="accent-[#0891b2]"
-                      />
                       {item}
-                    </label>
-                  );
-                })}
+                      <span className="text-[0.8rem] leading-none">×</span>
+                    </button>
+                  ))}
+                  {menuItems.length === 0 && (
+                    <span className="text-xs text-slate-400">Select menu items below</span>
+                  )}
+                </div>
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  {availableMenuItems.map((item) => {
+                    const active = menuItems.includes(item);
+                    return (
+                      <button
+                        key={item}
+                        type="button"
+                        onClick={() => toggleMenuItem(item)}
+                        className={`rounded-[8px] border px-2.5 py-1.5 text-left text-xs font-medium transition ${
+                          active
+                            ? 'border-cyan-200 bg-cyan-50 text-cyan-800'
+                            : 'border-cyan-100 bg-white text-slate-600 hover:border-cyan-200 hover:text-slate-900'
+                        }`}
+                      >
+                        {item}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
@@ -185,7 +199,7 @@ export default function Sidebar({
               <label className="block text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
                 Strategy
               </label>
-              <div className="grid grid-cols-1 gap-1.5">
+              <div className="grid grid-cols-3 gap-1 rounded-[12px] border border-cyan-100 bg-cyan-50/70 p-1">
                 {STRATEGIES.map((s) => {
                   const active = strategy === s.value;
                   return (
@@ -193,18 +207,18 @@ export default function Sidebar({
                       type="button"
                       key={s.value}
                       onClick={() => setStrategy(s.value)}
-                      className={`flex items-center justify-center rounded-xl border px-3 py-2.5 text-xs font-medium transition ${
+                      className={`flex items-center justify-center rounded-[10px] px-2 py-2.5 text-xs font-medium transition ${
                         active
-                          ? 'border-cyan-700 bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_100%)] text-white shadow-[0_12px_24px_rgba(8,145,178,0.2)]'
-                          : 'border-cyan-100 bg-white/88 text-slate-600 hover:border-cyan-200 hover:text-slate-900'
+                          ? 'bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_100%)] text-white shadow-[0_12px_24px_rgba(8,145,178,0.2)]'
+                          : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
-                      {s.label}
+                      {s.label.replace(/^.\s/, '')}
                     </button>
                   );
                 })}
               </div>
-              <div className="rounded-xl border border-cyan-100 bg-white/72 px-3 py-2.5 text-xs leading-5 text-slate-500">
+              <div className="rounded-[12px] border border-cyan-100 bg-white/72 px-3 py-2.5 text-xs leading-5 text-slate-500">
                 <span className="font-semibold text-slate-700">
                   {STRATEGY_HELP[strategy].title}:
                 </span>{' '}
@@ -215,7 +229,7 @@ export default function Sidebar({
             <button
               type="submit"
               disabled={loading || !city.trim()}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_52%,#38bdf8_100%)] py-2.5 text-sm font-semibold text-white shadow-[0_16px_28px_rgba(8,145,178,0.26)] transition hover:translate-y-[-1px] hover:shadow-[0_22px_36px_rgba(8,145,178,0.3)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-[12px] bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_52%,#38bdf8_100%)] py-2.5 text-sm font-semibold text-white shadow-[0_16px_28px_rgba(8,145,178,0.26)] transition hover:translate-y-[-1px] hover:shadow-[0_22px_36px_rgba(8,145,178,0.3)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading && (
                 <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -224,7 +238,7 @@ export default function Sidebar({
             </button>
 
             {error && (
-              <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-xs text-red-700">
+              <div className="flex items-start gap-2 rounded-[12px] border border-red-200 bg-red-50 px-3 py-3 text-xs text-red-700">
                 <span className="flex-1">❌ {error}</span>
                 <button
                   type="button"

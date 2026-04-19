@@ -43,15 +43,13 @@ export default function ScoreCard({ location, isActive, onClick, context = {}, o
   }
 
   const saveLabel =
-    saveStatus === 'ok' ? '✅ Saved!' : saveStatus === 'err' ? '❌ Failed' : '💾 Save Location';
+    saveStatus === 'ok' ? '✅ Saved!' : saveStatus === 'err' ? 'Failed' : 'Save Location';
+  const hasPopulation = location.population !== undefined && location.population !== null;
+  const hasIncome = location.medianIncome !== undefined && location.medianIncome !== null;
   const locationMeta = [
     {
-      label: 'Population',
-      value: location.population ? location.population.toLocaleString() : '—',
-    },
-    {
       label: 'Income',
-      value: location.medianIncome ? `$${location.medianIncome.toLocaleString()}` : '—',
+      value: hasIncome ? `$${location.medianIncome.toLocaleString()}` : 'Data unavailable',
     },
     {
       label: 'Anchor',
@@ -69,13 +67,13 @@ export default function ScoreCard({ location, isActive, onClick, context = {}, o
   return (
     <div
       onClick={onClick}
-      className={`w-full cursor-pointer rounded-[16px] border p-3.5 text-left transition duration-200 hover:-translate-y-[1px] ${
+      className={`w-full cursor-pointer rounded-[14px] border p-3 text-left transition duration-200 hover:-translate-y-[1px] ${
         isActive
           ? 'border-cyan-200 bg-[linear-gradient(180deg,#f3feff_0%,#ebfdff_100%)] shadow-[0_20px_36px_rgba(8,145,178,0.16)]'
           : 'border-cyan-100 bg-[rgba(255,255,255,0.88)] shadow-[0_14px_30px_rgba(8,145,178,0.1)] hover:border-cyan-200'
       }`}
     >
-      <div className="mb-2.5 flex items-center justify-between">
+      <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span
             className="inline-flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white shadow-[0_10px_20px_rgba(15,23,42,0.18)]"
@@ -98,7 +96,16 @@ export default function ScoreCard({ location, isActive, onClick, context = {}, o
         </div>
       </div>
 
-      <div className="mb-3 grid grid-cols-3 gap-x-2.5 gap-y-1.5">
+      <div className="mb-2 rounded-[10px] border border-cyan-100 bg-cyan-50/70 px-3 py-2">
+        <div className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-slate-400">
+          Population
+        </div>
+        <div className="mt-0.5 text-sm font-semibold text-slate-800">
+          {hasPopulation ? location.population.toLocaleString() : 'Data unavailable'}
+        </div>
+      </div>
+
+      <div className="mb-3 grid grid-cols-3 gap-x-2 gap-y-1.5">
         <ScoreBar label="Population" score={s.populationScore} maxScore={20} color="#3b82f6" />
         <ScoreBar label="Income" score={s.incomeScore} maxScore={20} color="#22c55e" />
         <ScoreBar label="Anchors" score={s.anchorScore} maxScore={20} color="#eab308" />
@@ -107,11 +114,11 @@ export default function ScoreCard({ location, isActive, onClick, context = {}, o
         <ScoreBar label="Catchment" score={s.catchmentScore} maxScore={20} color="#06b6d4" />
       </div>
 
-      <div className="mb-3 grid grid-cols-2 gap-2">
+      <div className="mb-3 grid grid-cols-3 gap-2">
         {locationMeta.map((item) => (
           <div
             key={item.label}
-            className="rounded-xl border border-cyan-100 bg-white/72 px-2.5 py-2"
+            className="rounded-[10px] border border-cyan-100 bg-white/72 px-2.5 py-2"
           >
             <div className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-slate-400">
               {item.label}
@@ -125,7 +132,7 @@ export default function ScoreCard({ location, isActive, onClick, context = {}, o
         type="button"
         onClick={handleSave}
         disabled={saveStatus !== null}
-        className={`w-full rounded-xl border px-3 py-2.5 text-xs font-medium transition ${
+        className={`w-full rounded-[10px] border px-3 py-2.5 text-xs font-medium transition ${
           saveStatus === 'ok'
             ? 'border-green-200 bg-green-50 text-green-700'
             : saveStatus === 'err'
