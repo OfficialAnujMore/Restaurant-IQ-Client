@@ -3,6 +3,8 @@ import axios from 'axios';
 const TOKEN_KEY = 'riq_token';
 const USER_KEY = 'riq_user';
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+console.log({SERVER_URL});
+
 
 const api = axios.create({ baseURL: `${SERVER_URL}/api` });
 
