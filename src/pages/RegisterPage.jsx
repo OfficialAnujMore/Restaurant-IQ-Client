@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { registerAuth } from '../services/api.js';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const inputClass =
+  'w-full rounded-2xl border border-cyan-100 bg-white/90 px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-cyan-300 focus:ring-4 focus:ring-cyan-100';
+
 export default function RegisterPage() {
-  const { login } = useAuth();
+  const { login, user, token, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -36,8 +39,12 @@ export default function RegisterPage() {
     setError(null);
     setLoading(true);
     try {
-      const { user, token } = await registerAuth({ name: name.trim(), email, password });
-      login(user, token);
+      const { user: nextUser, token: nextToken } = await registerAuth({
+        name: name.trim(),
+        email,
+        password,
+      });
+      login(nextUser, nextToken);
       navigate('/app');
     } catch (err) {
       setError(err.message);
@@ -46,113 +53,187 @@ export default function RegisterPage() {
     }
   }
 
-  const inputClass =
-    'w-full rounded-md bg-[#0f172a] border border-[#334155] px-3 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]';
+  if (authLoading) return null;
+  if (user && token) return <Navigate to="/app" replace />;
 
   return (
-    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md bg-[#1e293b] border border-[#334155] rounded-xl p-8 shadow-xl">
-        <div className="flex items-center gap-2 mb-6">
-          <span className="text-2xl">🍔</span>
-          <span className="text-lg font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            RestaurantIQ
-          </span>
-        </div>
+    <div className="relative min-h-screen overflow-hidden bg-[linear-gradient(180deg,#e7fbff_0%,#dff6f7_35%,#edf8ff_100%)] text-slate-900">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(103,232,249,0.45),transparent_26%),radial-gradient(circle_at_bottom_right,rgba(125,211,252,0.24),transparent_24%)]" />
 
-        <h1 className="text-2xl font-bold text-white">Create your account</h1>
-        <p className="text-sm text-slate-400 mt-1">
-          Already have an account?{' '}
-          <Link to="/login" className="text-blue-400 hover:text-blue-300">
-            Login →
+      <nav className="relative z-10 border-b border-white/50 bg-[linear-gradient(90deg,rgba(7,89,133,0.72)_0%,rgba(8,145,178,0.58)_52%,rgba(236,254,255,0.42)_100%)] backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <Link to={user && token ? '/app' : '/'} className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_100%)] text-base text-white shadow-[0_18px_30px_rgba(8,145,178,0.22)]">
+              🍔
+            </div>
+            <span className="text-base font-semibold tracking-[-0.02em] text-white">
+              RestaurantIQ
+            </span>
           </Link>
-        </p>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/"
+              className="rounded-full border border-white/30 bg-white/15 px-4 py-2 text-xs font-medium text-white transition hover:bg-white/22"
+            >
+              Home
+            </Link>
+            <Link
+              to="/login"
+              className="rounded-full border border-white/40 bg-white/88 px-4 py-2 text-xs font-semibold text-cyan-900 shadow-[0_10px_24px_rgba(8,145,178,0.14)] transition hover:bg-white"
+            >
+              Sign In
+            </Link>
+          </div>
+        </div>
+      </nav>
 
-        <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3.5">
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">Full Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Jane Doe"
-              className={inputClass}
-              required
-            />
-            {nameError && <div className="text-xs text-red-400 mt-1">{nameError}</div>}
+      <main className="relative z-10 mx-auto grid min-h-[calc(100vh-73px)] max-w-6xl items-center gap-10 px-6 py-12 lg:grid-cols-[1.02fr_0.98fr]">
+        <section className="max-w-xl">
+          <div className="mb-4 inline-flex rounded-full border border-cyan-200/80 bg-white/60 px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-cyan-800 shadow-[0_10px_30px_rgba(8,145,178,0.1)] backdrop-blur-xl">
+            Premium Aqua Access
+          </div>
+          <h1 className="text-5xl font-semibold leading-[1.02] tracking-[-0.05em] text-slate-900 sm:text-6xl">
+            Build your next
+            <span className="block bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_50%,#38bdf8_100%)] bg-clip-text text-transparent">
+              location strategy
+            </span>
+          </h1>
+          <p className="mt-5 max-w-lg text-base leading-7 text-slate-600">
+            Create an account to save recommended sites, compare competitive patterns, and work
+            inside the redesigned ArcGIS map experience.
+          </p>
+
+          <div className="mt-8 space-y-3">
+            {[
+              'Save high-performing candidate zones for later review',
+              'Open your dashboard directly from the RestaurantIQ brand navbar',
+              'Run city analysis with the current ArcGIS workflow unchanged',
+            ].map((item) => (
+              <div
+                key={item}
+                className="flex items-center gap-3 rounded-[24px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.76)_0%,rgba(236,254,255,0.72)_100%)] px-4 py-3 text-sm text-slate-600 shadow-[0_16px_34px_rgba(8,145,178,0.1)] backdrop-blur-xl"
+              >
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_100%)] text-white shadow-[0_10px_20px_rgba(8,145,178,0.2)]">
+                  ✓
+                </span>
+                {item}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-[34px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(236,254,255,0.74)_100%)] p-7 shadow-[0_28px_60px_rgba(8,145,178,0.18)] backdrop-blur-xl sm:p-8">
+          <div className="mb-6">
+            <div className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-cyan-700">
+              Register
+            </div>
+            <h2 className="mt-2 text-3xl font-semibold tracking-[-0.03em] text-slate-900">
+              Create your account
+            </h2>
+            <p className="mt-2 text-sm text-slate-500">
+              Already have an account?{' '}
+              <Link to="/login" className="font-medium text-cyan-700 hover:text-cyan-900">
+                Sign in
+              </Link>
+            </p>
           </div>
 
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className={inputClass}
-              required
-            />
-            {emailError && <div className="text-xs text-red-400 mt-1">{emailError}</div>}
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">Password</label>
-            <div className="relative">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div className="space-y-2">
+              <label className="block text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                Full Name
+              </label>
               <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Min 8 characters"
-                className={inputClass + ' pr-10'}
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Jane Doe"
+                className={inputClass}
                 required
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-slate-400 hover:text-slate-200"
-                aria-label="Toggle password"
-              >
-                {showPassword ? '🙈' : '👁'}
-              </button>
+              {nameError && <div className="text-xs text-red-500">{nameError}</div>}
             </div>
-            {passwordError && <div className="text-xs text-red-400 mt-1">{passwordError}</div>}
-          </div>
 
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
-              Confirm Password
-            </label>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              placeholder="Re-enter password"
-              className={inputClass}
-              required
-            />
-            {confirmError && <div className="text-xs text-red-400 mt-1">{confirmError}</div>}
-          </div>
-
-          {error && (
-            <div className="text-xs text-red-300 bg-red-500/10 border border-red-500/30 rounded px-3 py-2">
-              ❌ {error}
+            <div className="space-y-2">
+              <label className="block text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                Email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className={inputClass}
+                required
+              />
+              {emailError && <div className="text-xs text-red-500">{emailError}</div>}
             </div>
-          )}
 
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className="mt-2 w-full rounded-md bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold py-2.5 transition-colors"
-          >
-            {loading ? 'Creating account...' : 'Create Account'}
-          </button>
-        </form>
+            <div className="space-y-2">
+              <label className="block text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Minimum 8 characters"
+                  className={`${inputClass} pr-11`}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400 transition hover:text-cyan-700"
+                  aria-label="Toggle password"
+                >
+                  {showPassword ? '🙈' : '👁'}
+                </button>
+              </div>
+              {passwordError && <div className="text-xs text-red-500">{passwordError}</div>}
+            </div>
 
-        <div className="mt-6 text-center">
-          <Link to="/" className="text-xs text-slate-400 hover:text-slate-200">
-            ← Back to home
-          </Link>
-        </div>
-      </div>
+            <div className="space-y-2">
+              <label className="block text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                Confirm Password
+              </label>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                placeholder="Re-enter password"
+                className={inputClass}
+                required
+              />
+              {confirmError && <div className="text-xs text-red-500">{confirmError}</div>}
+            </div>
+
+            {error && (
+              <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-700">
+                ❌ {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={!canSubmit}
+              className="mt-2 rounded-2xl bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_52%,#38bdf8_100%)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_32px_rgba(8,145,178,0.28)] transition hover:translate-y-[-1px] hover:shadow-[0_24px_40px_rgba(8,145,178,0.34)] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading ? 'Creating account...' : 'Create Account'}
+            </button>
+          </form>
+
+          <div className="mt-6 flex items-center justify-between border-t border-cyan-100 pt-5 text-xs text-slate-500">
+            <Link to="/" className="hover:text-slate-700">
+              ← Back to home
+            </Link>
+            <Link to="/app" className="font-medium text-cyan-700 hover:text-cyan-900">
+              Dashboard
+            </Link>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }

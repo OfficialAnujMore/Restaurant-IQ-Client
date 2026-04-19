@@ -26,6 +26,21 @@ const STRATEGIES = [
   { value: 'both', label: '⚖️ Show Both' },
 ];
 
+const STRATEGY_HELP = {
+  gap: {
+    title: 'Gap Finder',
+    body: 'Looks for underserved zones where demand signals are strong and direct competition is lighter.',
+  },
+  cluster: {
+    title: 'Hotspot',
+    body: 'Looks for proven busy areas where restaurants and activity already cluster together.',
+  },
+  both: {
+    title: 'Show Both',
+    body: 'Combines underserved opportunities with established restaurant hotspots for comparison.',
+  },
+};
+
 export default function Sidebar({
   onAnalyze,
   loading,
@@ -62,18 +77,29 @@ export default function Sidebar({
   }
 
   const inputClass =
-    'w-full rounded-md bg-[#0f172a] border border-[#334155] px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#3b82f6]';
+    'w-full rounded-xl border border-cyan-100 bg-white/92 px-4 py-2.5 text-sm text-slate-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.88)] outline-none transition focus:border-cyan-300 focus:ring-4 focus:ring-cyan-100';
+  const sectionClass =
+    'rounded-[18px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.78)_0%,rgba(236,254,255,0.72)_100%)] p-4 shadow-[0_18px_34px_rgba(8,145,178,0.14)] backdrop-blur-xl';
 
   return (
-    <div className="p-5 flex flex-col gap-5">
-      <header>
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-          🍔 RestaurantIQ
-        </h1>
-        <p className="text-xs text-slate-400 mt-1">ArcGIS-powered location intelligence</p>
+    <div className="flex flex-col gap-3 p-4">
+      <header className={sectionClass}>
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#0891b2_0%,#22c1c3_100%)] text-base text-white shadow-[0_16px_26px_rgba(34,193,195,0.24)]">
+            🍔
+          </div>
+          <div>
+            <h1 className="text-[1.45rem] font-semibold tracking-[-0.03em] text-slate-900">
+              RestaurantIQ
+            </h1>
+            <p className="mt-0.5 text-xs text-slate-500">
+              ArcGIS-powered location intelligence
+            </p>
+          </div>
+        </div>
       </header>
 
-      <div className="flex gap-1 bg-[#0f172a] border border-[#334155] rounded-full p-0.5">
+      <div className="flex gap-1 rounded-full border border-cyan-100/80 bg-white/72 p-1 shadow-[0_10px_24px_rgba(8,145,178,0.12)]">
         {[
           { key: 'search', label: '🔍 Search' },
           { key: 'saved', label: '📌 Saved' },
@@ -82,8 +108,10 @@ export default function Sidebar({
             key={t.key}
             type="button"
             onClick={() => setTab(t.key)}
-            className={`flex-1 text-xs py-1.5 rounded-full transition-colors ${
-              tab === t.key ? 'bg-[#3b82f6] text-white' : 'text-slate-300 hover:text-white'
+            className={`flex-1 rounded-full px-3 py-2 text-xs font-medium transition ${
+              tab === t.key
+                ? 'bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_100%)] text-white shadow-[0_10px_20px_rgba(8,145,178,0.2)]'
+                : 'text-slate-500 hover:text-slate-900'
             }`}
           >
             {t.label}
@@ -93,9 +121,11 @@ export default function Sidebar({
 
       {tab === 'search' && (
         <>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">City</label>
+          <form onSubmit={handleSubmit} className={`${sectionClass} flex flex-col gap-5`}>
+            <div className="space-y-1.5">
+              <label className="block text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                City
+              </label>
               <input
                 type="text"
                 value={city}
@@ -105,8 +135,8 @@ export default function Sidebar({
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
+            <div className="space-y-1.5">
+              <label className="block text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
                 Restaurant Type
               </label>
               <select
@@ -122,27 +152,27 @@ export default function Sidebar({
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
+            <div className="space-y-1.5">
+              <label className="block text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
                 Menu Items (select all that apply)
               </label>
-              <div className="grid grid-cols-2 gap-1.5">
+              <div className="grid grid-cols-2 gap-2">
                 {availableMenuItems.map((item) => {
                   const active = menuItems.includes(item);
                   return (
                     <label
                       key={item}
-                      className={`flex items-center gap-2 text-xs px-2.5 py-1.5 rounded border cursor-pointer transition-colors ${
+                      className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 text-xs font-medium transition ${
                         active
-                          ? 'bg-[#1e293b] border-[#3b82f6] text-slate-100'
-                          : 'bg-[#0f172a] border-[#334155] text-slate-300 hover:border-slate-500'
+                          ? 'border-cyan-200 bg-cyan-50 text-cyan-800 shadow-[0_10px_24px_rgba(34,211,238,0.16)]'
+                          : 'border-cyan-100 bg-white/88 text-slate-600 hover:border-cyan-200 hover:text-slate-900'
                       }`}
                     >
                       <input
                         type="checkbox"
                         checked={active}
                         onChange={() => toggleMenuItem(item)}
-                        className="accent-[#3b82f6]"
+                        className="accent-[#0891b2]"
                       />
                       {item}
                     </label>
@@ -151,9 +181,11 @@ export default function Sidebar({
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Strategy</label>
-              <div className="flex gap-1.5">
+            <div className="space-y-1.5">
+              <label className="block text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                Strategy
+              </label>
+              <div className="grid grid-cols-1 gap-1.5">
                 {STRATEGIES.map((s) => {
                   const active = strategy === s.value;
                   return (
@@ -161,10 +193,10 @@ export default function Sidebar({
                       type="button"
                       key={s.value}
                       onClick={() => setStrategy(s.value)}
-                      className={`flex-1 text-xs px-2 py-2 rounded-full border transition-colors ${
+                      className={`flex items-center justify-center rounded-xl border px-3 py-2.5 text-xs font-medium transition ${
                         active
-                          ? 'bg-[#3b82f6] border-[#3b82f6] text-white'
-                          : 'bg-[#1e293b] border-[#334155] text-slate-300 hover:border-slate-500'
+                          ? 'border-cyan-700 bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_100%)] text-white shadow-[0_12px_24px_rgba(8,145,178,0.2)]'
+                          : 'border-cyan-100 bg-white/88 text-slate-600 hover:border-cyan-200 hover:text-slate-900'
                       }`}
                     >
                       {s.label}
@@ -172,12 +204,18 @@ export default function Sidebar({
                   );
                 })}
               </div>
+              <div className="rounded-xl border border-cyan-100 bg-white/72 px-3 py-2.5 text-xs leading-5 text-slate-500">
+                <span className="font-semibold text-slate-700">
+                  {STRATEGY_HELP[strategy].title}:
+                </span>{' '}
+                {STRATEGY_HELP[strategy].body}
+              </div>
             </div>
 
             <button
               type="submit"
               disabled={loading || !city.trim()}
-              className="w-full rounded-md bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold py-2.5 flex items-center justify-center gap-2 transition-colors"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_52%,#38bdf8_100%)] py-2.5 text-sm font-semibold text-white shadow-[0_16px_28px_rgba(8,145,178,0.26)] transition hover:translate-y-[-1px] hover:shadow-[0_22px_36px_rgba(8,145,178,0.3)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading && (
                 <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -186,12 +224,12 @@ export default function Sidebar({
             </button>
 
             {error && (
-              <div className="flex items-start gap-2 text-xs text-red-300 bg-red-500/10 border border-red-500/30 rounded px-3 py-2">
+              <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-xs text-red-700">
                 <span className="flex-1">❌ {error}</span>
                 <button
                   type="button"
                   onClick={onDismissError}
-                  className="text-red-300 hover:text-red-100"
+                  className="text-red-400 transition hover:text-red-700"
                   aria-label="Dismiss"
                 >
                   ✕
@@ -201,13 +239,13 @@ export default function Sidebar({
           </form>
 
           {results?.top5?.length > 0 && (
-            <div className="flex flex-col gap-3">
+            <div className={`${sectionClass} flex flex-col gap-2.5`}>
               <div className="flex items-center gap-2">
-                <div className="h-px flex-1 bg-[#334155]" />
-                <span className="text-xs uppercase tracking-wider text-slate-400">
+                <div className="h-px flex-1 bg-slate-200" />
+                <span className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-400">
                   Top 5 Locations
                 </span>
-                <div className="h-px flex-1 bg-[#334155]" />
+                <div className="h-px flex-1 bg-slate-200" />
               </div>
               <div className="flex flex-col gap-2">
                 {results.top5.map((loc) => (
