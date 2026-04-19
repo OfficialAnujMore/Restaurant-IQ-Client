@@ -10,8 +10,9 @@ const RANK_COLORS = {
   5: '#ef4444',
 };
 
-export default function ScoreCard({ location, isActive, onClick, context = {} }) {
+export default function ScoreCard({ location, isActive, onClick, context = {}, onLoadHeatmap }) {
   const [saveStatus, setSaveStatus] = useState(null);
+  const [heatmapStatus, setHeatmapStatus] = useState('idle');
   const rank = location.rank ?? '-';
   const color = RANK_COLORS[rank] || '#64748b';
   const s = location.scores || {};
@@ -92,6 +93,49 @@ export default function ScoreCard({ location, isActive, onClick, context = {} })
       >
         {saveLabel}
       </button>
+
+      {onLoadHeatmap && (
+        <button
+          type="button"
+          onClick={async (e) => {
+            e.stopPropagation();
+            setHeatmapStatus('loading');
+            try {
+              await onLoadHeatmap(location.lat, location.lng);
+              setHeatmapStatus('success');
+              setTimeout(() => setHeatmapStatus('idle'), 2000);
+            } catch {
+              setHeatmapStatus('error');
+              setTimeout(() => setHeatmapStatus('idle'), 2000);
+            }
+          }}
+          disabled={heatmapStatus === 'loading'}
+          style={{
+            width: '100%',
+            marginTop: '8px',
+            padding: '8px',
+            background:
+              heatmapStatus === 'success'
+                ? '#16a34a'
+                : heatmapStatus === 'error'
+                  ? '#dc2626'
+                  : '#7c3aed',
+            border: 'none',
+            borderRadius: '6px',
+            color: 'white',
+            fontSize: '0.78rem',
+            fontWeight: 600,
+            cursor: heatmapStatus === 'loading' ? 'not-allowed' : 'pointer',
+            opacity: heatmapStatus === 'loading' ? 0.7 : 1,
+            transition: 'all 0.2s',
+          }}
+        >
+          {heatmapStatus === 'idle' && 'Show Rent Pressure Map'}
+          {heatmapStatus === 'loading' && 'Analyzing...'}
+          {heatmapStatus === 'success' && 'Loaded'}
+          {heatmapStatus === 'error' && 'Failed - Try Again'}
+        </button>
+      )}
     </div>
   );
 }

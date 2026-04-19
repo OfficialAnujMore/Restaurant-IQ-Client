@@ -2,8 +2,11 @@ import axios from 'axios';
 
 const TOKEN_KEY = 'riq_token';
 const USER_KEY = 'riq_user';
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+console.log({SERVER_URL});
 
-const api = axios.create({ baseURL: '/api' });
+
+const api = axios.create({ baseURL: `${SERVER_URL}/api` });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem(TOKEN_KEY);
@@ -63,6 +66,15 @@ export async function saveLocation(location) {
 export async function deleteLocation(id) {
   try {
     const { data } = await api.delete(`/saved-locations/${id}`);
+    return data;
+  } catch (err) {
+    unwrap(err);
+  }
+}
+
+export async function getRentPressure({ lat, lng }) {
+  try {
+    const { data } = await api.post('/rent-pressure', { lat, lng });
     return data;
   } catch (err) {
     unwrap(err);

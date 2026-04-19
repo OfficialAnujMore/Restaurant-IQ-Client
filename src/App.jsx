@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Sidebar from './components/Sidebar.jsx';
 import MapView from './components/MapView.jsx';
 import LayerToggle from './components/LayerToggle.jsx';
@@ -18,7 +18,17 @@ export default function App() {
     malls: true,
     top5: true,
     grid: false,
+    rentPressure: false,
   });
+  const mapRef = useRef(null);
+
+  async function handleLoadHeatmap(lat, lng) {
+    if (mapRef.current?.loadRentHeatmap) {
+      const res = await mapRef.current.loadRentHeatmap(lat, lng);
+      setLayerVisibility((prev) => ({ ...prev, rentPressure: true }));
+      return res;
+    }
+  }
 
   async function handleAnalyze(payload) {
     setLoading(true);
@@ -71,6 +81,7 @@ export default function App() {
             onDismissError={() => setError(null)}
             activeLocation={activeLocation}
             onSelectLocation={setActiveLocation}
+            onLoadHeatmap={handleLoadHeatmap}
           />
           {results && (
             <div className="px-5 pb-5">
@@ -86,6 +97,7 @@ export default function App() {
             layerVisibility={layerVisibility}
             loading={loading}
             city={lastCity}
+            mapRef={mapRef}
           />
         </div>
       </div>

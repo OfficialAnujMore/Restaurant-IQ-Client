@@ -34,6 +34,7 @@ export default function Sidebar({
   onDismissError,
   activeLocation,
   onSelectLocation,
+  onLoadHeatmap,
 }) {
   const [tab, setTab] = useState('search');
   const [city, setCity] = useState('');
@@ -216,6 +217,7 @@ export default function Sidebar({
                     isActive={activeLocation?.rank === loc.rank}
                     onClick={() => onSelectLocation(loc)}
                     context={{ city: results.city, category: results.category }}
+                    onLoadHeatmap={onLoadHeatmap}
                   />
                 ))}
               </div>
