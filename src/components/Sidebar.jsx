@@ -84,22 +84,6 @@ export default function Sidebar({
 
   return (
     <div className="flex flex-col gap-3 p-3">
-      {/* <header className={sectionClass}>
-        <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[linear-gradient(135deg,#0891b2_0%,#22c1c3_100%)] text-base text-white shadow-[0_16px_26px_rgba(34,193,195,0.24)]">
-            🍔
-          </div>
-          <div>
-            <h1 className="text-[1.35rem] font-semibold tracking-[-0.03em] text-slate-900">
-              RestaurantIQ
-            </h1>
-            <p className="mt-0.5 text-xs text-slate-500">
-              ArcGIS-powered location intelligence
-            </p>
-          </div>
-        </div>
-      </header> */}
-
       <div className="flex gap-1 rounded-[14px] border border-cyan-100/80 bg-white/72 p-1 shadow-[0_10px_24px_rgba(8,145,178,0.12)]">
         {[
           { key: 'search', label: 'Search' },
@@ -235,19 +219,19 @@ export default function Sidebar({
               {loading && (
                 <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
               )}
-              {loading ? 'Analyzing...' : '🔍 Find Best Locations'}
+              {loading ? 'Analyzing...' : 'Find Best Locations'}
             </button>
 
             {error && (
               <div className="flex items-start gap-2 rounded-[12px] border border-red-200 bg-red-50 px-3 py-3 text-xs text-red-700">
-                <span className="flex-1">❌ {error}</span>
+                <span className="flex-1">{error}</span>
                 <button
                   type="button"
                   onClick={onDismissError}
                   className="text-red-400 transition hover:text-red-700"
                   aria-label="Dismiss"
                 >
-                  ✕
+                  Close
                 </button>
               </div>
             )}

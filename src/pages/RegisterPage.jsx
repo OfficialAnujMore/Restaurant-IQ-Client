@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { registerAuth } from '../services/api.js';
+import BrandMark from '../components/BrandMark.jsx';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -63,9 +64,7 @@ export default function RegisterPage() {
       <nav className="relative z-10 border-b border-white/50 bg-[linear-gradient(90deg,rgba(7,89,133,0.72)_0%,rgba(8,145,178,0.58)_52%,rgba(236,254,255,0.42)_100%)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link to={user && token ? '/app' : '/'} className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_100%)] text-base text-white shadow-[0_18px_30px_rgba(8,145,178,0.22)]">
-              🍔
-            </div>
+            <BrandMark />
             <span className="text-base font-semibold tracking-[-0.02em] text-white">
               RestaurantIQ
             </span>
@@ -89,9 +88,9 @@ export default function RegisterPage() {
 
       <main className="relative z-10 mx-auto grid min-h-[calc(100vh-73px)] max-w-6xl items-center gap-10 px-6 py-12 lg:grid-cols-[1.02fr_0.98fr]">
         <section className="max-w-xl">
-          <div className="mb-4 inline-flex rounded-full border border-cyan-200/80 bg-white/60 px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-cyan-800 shadow-[0_10px_30px_rgba(8,145,178,0.1)] backdrop-blur-xl">
+          {/* <div className="mb-4 inline-flex rounded-full border border-cyan-200/80 bg-white/60 px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-cyan-800 shadow-[0_10px_30px_rgba(8,145,178,0.1)] backdrop-blur-xl">
             Premium Aqua Access
-          </div>
+          </div> */}
           <h1 className="text-5xl font-semibold leading-[1.02] tracking-[-0.05em] text-slate-900 sm:text-6xl">
             Build your next
             <span className="block bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_50%,#38bdf8_100%)] bg-clip-text text-transparent">
@@ -114,7 +113,7 @@ export default function RegisterPage() {
                 className="flex items-center gap-3 rounded-[24px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.76)_0%,rgba(236,254,255,0.72)_100%)] px-4 py-3 text-sm text-slate-600 shadow-[0_16px_34px_rgba(8,145,178,0.1)] backdrop-blur-xl"
               >
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_100%)] text-white shadow-[0_10px_20px_rgba(8,145,178,0.2)]">
-                  ✓
+                  OK
                 </span>
                 {item}
               </div>
@@ -185,10 +184,10 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400 transition hover:text-cyan-700"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition hover:text-cyan-700"
                   aria-label="Toggle password"
                 >
-                  {showPassword ? '🙈' : '👁'}
+                  {showPassword ? 'Hide' : 'Show'}
                 </button>
               </div>
               {passwordError && <div className="text-xs text-red-500">{passwordError}</div>}
@@ -211,7 +210,7 @@ export default function RegisterPage() {
 
             {error && (
               <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-700">
-                ❌ {error}
+                {error}
               </div>
             )}
 

@@ -548,7 +548,7 @@ export default function MapView({ results, activeLocation, layerVisibility, load
       {results?.error && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-[rgba(224,247,250,0.72)] backdrop-blur-md">
           <div className="max-w-md rounded-[16px] border border-red-200 bg-white px-6 py-5 text-center shadow-[0_24px_48px_rgba(239,68,68,0.12)]">
-            <div className="mb-2 text-2xl text-red-500">⚠️</div>
+            <div className="mb-2 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-red-500">Alert</div>
             <div className="text-sm font-semibold text-slate-900">Pipeline failed</div>
             <div className="mt-1 text-xs text-slate-500">
               {results.step ? `Step: ${results.step} — ` : ''}

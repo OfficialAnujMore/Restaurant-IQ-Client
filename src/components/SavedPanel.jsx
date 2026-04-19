@@ -90,10 +90,10 @@ export default function SavedPanel() {
             <button
               type="button"
               onClick={() => handleDelete(it._id)}
-              className="text-sm text-slate-400 transition-colors hover:text-red-500"
+              className="rounded-full border border-slate-200 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-slate-400 transition-colors hover:border-red-200 hover:text-red-500"
               title="Delete"
             >
-              🗑
+              Delete
             </button>
           </div>
         );

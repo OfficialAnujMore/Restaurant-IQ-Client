@@ -6,6 +6,7 @@ import LayerToggle from './components/LayerToggle.jsx';
 import InsightsSidebar from './components/InsightsSidebar.jsx';
 import { analyzeCity } from './services/api.js';
 import { useAuth } from './context/AuthContext.jsx';
+import BrandMark from './components/BrandMark.jsx';
 
 const BASEMAP_OPTIONS = [
   { id: 'streets-vector', label: 'Streets', accent: '#0891b2' },
@@ -70,53 +71,85 @@ export default function App() {
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[linear-gradient(180deg,#e7fbff_0%,#dff6f7_32%,#edf8ff_100%)] text-slate-900">
-      {/* ── Navbar ── */}
-      <header className="absolute inset-x-0 top-0 z-20 flex h-14 items-center justify-between gap-4 border-b border-white/20 bg-[linear-gradient(105deg,#06b6d4_0%,#22d3ee_100%,#ffffff_100%)] px-4 shadow-[0_4px_24px_rgba(6,182,212,0.2)] sm:px-6">
-        <Link to="/" className="shrink-0">
-          <span className="text-sm font-bold tracking-[-0.02em] text-white drop-shadow-[0_1px_2px_rgba(0,120,150,0.4)]">
-            RestaurantIQ
-          </span>
-        </Link>
+      <header className="absolute inset-x-0 top-0 z-20 border-b border-white/50 bg-[linear-gradient(90deg,rgba(7,89,133,0.72)_0%,rgba(8,145,178,0.58)_52%,rgba(236,254,255,0.42)_100%)] backdrop-blur-xl">
+        <div className="flex h-[73px] items-center justify-between gap-4 px-4 sm:px-6">
+          <Link to="/" className="flex shrink-0 items-center gap-3">
+            <BrandMark />
+            <span className="text-base font-semibold tracking-[-0.02em] text-white">
+              RestaurantIQ
+            </span>
+          </Link>
 
-        {/* Map Theme pills */}
-        <div className="flex items-center gap-1 rounded-[12px] border border-cyan-200/60 bg-white/25 p-1 backdrop-blur-sm">
-          <span className="pl-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-cyan-800/60">
-            Map
-          </span>
+          <div className="hidden items-center gap-1 rounded-full border border-white/24 bg-white/12 p-1.5 backdrop-blur-sm lg:flex">
+            <span className="pl-2 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-white/70">
+              Map
+            </span>
+            {BASEMAP_OPTIONS.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => setBasemapId(opt.id)}
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                  opt.id === basemapId
+                    ? 'bg-white/88 text-cyan-900 shadow-[0_10px_24px_rgba(8,145,178,0.14)]'
+                    : 'text-white hover:bg-white/16'
+                }`}
+              >
+                <span
+                  className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{ backgroundColor: opt.accent }}
+                />
+                {opt.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex shrink-0 items-center gap-3">
+            <span className="hidden text-xs font-medium text-slate-900 sm:inline">{user?.name}</span>
+            <Link
+              to="/"
+              className="hidden rounded-full border border-slate-900/12 bg-white/28 px-4 py-2 text-xs font-medium text-slate-900 transition hover:bg-white/40 md:inline-flex"
+            >
+              Home
+            </Link>
+            <button
+              type="button"
+              onClick={logout}
+              className="rounded-full border border-[#f4ead7]/70 bg-[#f4ead7] px-4 py-2 text-xs font-semibold text-[#6c5332] shadow-[0_10px_24px_rgba(8,145,178,0.14)] transition hover:bg-[#f8f0e2]"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+
+        <div className="border-t border-white/15 px-4 py-3 lg:hidden sm:px-6">
+          <div className="flex items-center gap-1 overflow-x-auto rounded-full border border-white/24 bg-white/12 p-1.5 backdrop-blur-sm">
+            <span className="pl-2 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-white/70">
+              Map
+            </span>
           {BASEMAP_OPTIONS.map((opt) => (
             <button
               key={opt.id}
               type="button"
               onClick={() => setBasemapId(opt.id)}
-              className={`flex items-center gap-1.5 rounded-[8px] px-2.5 py-1 text-xs font-medium transition ${
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium whitespace-nowrap transition ${
                 opt.id === basemapId
-                  ? 'bg-white/60 text-cyan-900 shadow-[0_2px_8px_rgba(0,0,0,0.1)]'
-                  : 'text-cyan-900/60 hover:bg-white/30 hover:text-cyan-900'
+                  ? 'bg-white/88 text-cyan-900 shadow-[0_10px_24px_rgba(8,145,178,0.14)]'
+                  : 'text-white hover:bg-white/16'
               }`}
             >
               <span
-                className="inline-block h-1.5 w-1.5 rounded-full shrink-0"
+                className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
                 style={{ backgroundColor: opt.accent }}
               />
               {opt.label}
             </button>
           ))}
         </div>
-
-        <div className="flex items-center gap-3 shrink-0">
-          <span className="hidden text-xs font-medium text-cyan-900/70 sm:inline">{user?.name}</span>
-          <button
-            type="button"
-            onClick={logout}
-            className="rounded-full border border-cyan-200 bg-white/50 px-3.5 py-1.5 text-xs font-semibold text-cyan-900 shadow-[0_2px_12px_rgba(0,0,0,0.08)] transition hover:bg-white/80"
-          >
-            Sign Out
-          </button>
         </div>
       </header>
 
-      {/* ── Body ── */}
-      <div className="flex min-h-0 flex-1 pt-14">
+      <div className="flex min-h-0 flex-1 pt-[118px] lg:pt-[73px]">
         {/* Left sidebar */}
         <div className={`relative flex transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'w-0' : 'w-[332px] xl:w-[356px]'} shrink-0`}>
           <aside

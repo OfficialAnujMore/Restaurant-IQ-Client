@@ -49,10 +49,8 @@ export default function InsightPanel({
 
   return (
     <div className="mt-4 rounded-lg border border-purple-200 bg-purple-50 p-4 space-y-3">
-      {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-1.5">
-          <span className="text-purple-600 text-sm">✦</span>
           <span className="text-sm font-semibold text-purple-800">AI Site Analysis</span>
           {cached && (
             <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs text-purple-600">
@@ -73,14 +71,12 @@ export default function InsightPanel({
           className="text-purple-400 hover:text-purple-600 transition-colors text-base leading-none"
           aria-label="Close insights"
         >
-          ×
+          Close
         </button>
       </div>
 
-      {/* Summary */}
       <p className="text-sm text-gray-700 leading-relaxed">{insights.summary}</p>
 
-      {/* Key data points */}
       {insights.highlights?.length > 0 && (
         <div>
           <h4 className="text-xs font-semibold uppercase tracking-wide text-purple-700 mb-1">
@@ -97,7 +93,6 @@ export default function InsightPanel({
         </div>
       )}
 
-      {/* Pros / Cons */}
       <div className="grid grid-cols-2 gap-3">
         {insights.pros?.length > 0 && (
           <div>
@@ -131,7 +126,6 @@ export default function InsightPanel({
         )}
       </div>
 
-      {/* Best restaurant formats */}
       {insights.best_for?.length > 0 && (
         <div>
           <h4 className="text-xs font-semibold uppercase tracking-wide text-blue-700 mb-1">
@@ -150,7 +144,6 @@ export default function InsightPanel({
         </div>
       )}
 
-      {/* Peak traffic */}
       {insights.best_time_to_visit && (
         <div className="rounded bg-white/60 px-3 py-2">
           <span className="text-xs font-semibold text-gray-600">Peak Traffic: </span>
@@ -158,7 +151,6 @@ export default function InsightPanel({
         </div>
       )}
 
-      {/* Things to verify on-site */}
       {insights.things_to_verify?.length > 0 && (
         <div>
           <h4 className="text-xs font-semibold uppercase tracking-wide text-orange-700 mb-1">
@@ -175,7 +167,6 @@ export default function InsightPanel({
         </div>
       )}
 
-      {/* Confidence / data quality note */}
       {insights.confidence_note && (
         <p className="rounded bg-gray-100 px-3 py-2 text-xs text-gray-500 italic">
           {insights.confidence_note}

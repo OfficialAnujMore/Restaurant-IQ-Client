@@ -43,7 +43,7 @@ export default function ScoreCard({ location, isActive, onClick, context = {}, o
   }
 
   const saveLabel =
-    saveStatus === 'ok' ? '✅ Saved!' : saveStatus === 'err' ? 'Failed' : 'Save Location';
+    saveStatus === 'ok' ? 'Saved' : saveStatus === 'err' ? 'Failed' : 'Save Location';
   const hasPopulation = location.population !== undefined && location.population !== null;
   const hasIncome = location.medianIncome !== undefined && location.medianIncome !== null;
   const locationMeta = [
@@ -148,7 +148,7 @@ export default function ScoreCard({ location, isActive, onClick, context = {}, o
         onClick={(e) => { e.stopPropagation(); onOpenInsights?.({ location, context }); }}
         className="mt-2 w-full rounded-[10px] border border-purple-100 bg-purple-50/60 px-3 py-2.5 text-xs font-medium text-purple-700 transition hover:border-purple-200 hover:bg-white hover:text-purple-900"
       >
-        ✦ Generate Insights
+        Generate Insights
       </button>
 
       {onLoadHeatmap && (

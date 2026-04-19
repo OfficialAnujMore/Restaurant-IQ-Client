@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { loginAuth } from '../services/api.js';
+import BrandMark from '../components/BrandMark.jsx';
 
 const inputClass =
   'w-full rounded-2xl border border-cyan-100 bg-white/90 px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-cyan-300 focus:ring-4 focus:ring-cyan-100';
@@ -40,9 +41,7 @@ export default function LoginPage() {
       <nav className="relative z-10 border-b border-white/50 bg-[linear-gradient(90deg,rgba(7,89,133,0.72)_0%,rgba(8,145,178,0.58)_52%,rgba(236,254,255,0.42)_100%)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link to={user && token ? '/app' : '/'} className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_100%)] text-base text-white shadow-[0_18px_30px_rgba(8,145,178,0.22)]">
-              🍔
-            </div>
+            <BrandMark />
             <span className="text-base font-semibold tracking-[-0.02em] text-white">
               RestaurantIQ
             </span>
@@ -50,7 +49,7 @@ export default function LoginPage() {
           <div className="flex items-center gap-3">
             <Link
               to="/"
-              className="rounded-full border border-white/30 bg-white/15 px-4 py-2 text-xs font-medium text-white transition hover:bg-white/22"
+              className="rounded-full border border-slate-900/12 bg-white/28 px-4 py-2 text-xs font-medium text-slate-900 transition hover:bg-white/40"
             >
               Home
             </Link>
@@ -66,34 +65,18 @@ export default function LoginPage() {
 
       <main className="relative z-10 mx-auto grid min-h-[calc(100vh-73px)] max-w-6xl items-center gap-10 px-6 py-12 lg:grid-cols-[1.08fr_0.92fr]">
         <section className="max-w-xl">
-          <div className="mb-4 inline-flex rounded-full border border-cyan-200/80 bg-white/60 px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-cyan-800 shadow-[0_10px_30px_rgba(8,145,178,0.1)] backdrop-blur-xl">
-            Aquatic Intelligence
-          </div>
+          {/* <div className="mb-4 inline-flex rounded-full border border-cyan-200/80 bg-white/60 px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-cyan-800 shadow-[0_10px_30px_rgba(8,145,178,0.1)] backdrop-blur-xl">
+            RestaurantIQ
+          </div> */}
           <h1 className="text-5xl font-semibold leading-[1.02] tracking-[-0.05em] text-slate-900 sm:text-6xl">
-            Dive back into
+            Sign in to
             <span className="block bg-[linear-gradient(135deg,#0f766e_0%,#0891b2_50%,#38bdf8_100%)] bg-clip-text text-transparent">
               RestaurantIQ
             </span>
           </h1>
           <p className="mt-5 max-w-lg text-base leading-7 text-slate-600">
-            Continue exploring restaurant site recommendations with ArcGIS-powered demographics,
-            competitive mapping, and premium location scoring.
+            Analyze cities, compare market signals, and review top recommended restaurant zones.
           </p>
-
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            {[
-              ['Live market scanning', 'Competitors, anchors, and candidate zones in one view'],
-              ['Premium map overlays', 'Soft catchments, ranked pins, and cleaner legends'],
-            ].map(([title, body]) => (
-              <div
-                key={title}
-                className="rounded-[26px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.76)_0%,rgba(236,254,255,0.72)_100%)] p-4 shadow-[0_18px_38px_rgba(8,145,178,0.12)] backdrop-blur-xl"
-              >
-                <div className="text-sm font-semibold text-slate-900">{title}</div>
-                <div className="mt-1 text-sm leading-6 text-slate-500">{body}</div>
-              </div>
-            ))}
-          </div>
         </section>
 
         <section className="rounded-[34px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(236,254,255,0.74)_100%)] p-7 shadow-[0_28px_60px_rgba(8,145,178,0.18)] backdrop-blur-xl sm:p-8">
@@ -143,17 +126,17 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400 transition hover:text-cyan-700"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition hover:text-cyan-700"
                   aria-label="Toggle password"
                 >
-                  {showPassword ? '🙈' : '👁'}
+                  {showPassword ? 'Hide' : 'Show'}
                 </button>
               </div>
             </div>
 
             {error && (
               <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-700">
-                ❌ {error}
+                {error}
               </div>
             )}
 

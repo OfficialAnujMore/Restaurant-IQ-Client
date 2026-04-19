@@ -23,7 +23,7 @@ export default function InsightsSidebar({ target, onClose }) {
     <aside className="z-10 flex w-[320px] shrink-0 flex-col overflow-hidden border-l border-cyan-100/70 bg-[linear-gradient(180deg,rgba(236,254,255,0.94)_0%,rgba(224,247,250,0.9)_100%)] backdrop-blur-xl xl:w-[348px]">
       <div className="flex h-14 shrink-0 items-center justify-between border-b border-cyan-100/70 px-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-purple-700">✦ AI Insights</span>
+          <span className="text-sm font-semibold text-purple-700">AI Insights</span>
           {target && (
             <span className="rounded-full border border-cyan-100 bg-white/70 px-2 py-0.5 text-[0.65rem] font-semibold text-slate-500">
               Location #{target.location?.rank}
@@ -36,15 +36,15 @@ export default function InsightsSidebar({ target, onClose }) {
           className="rounded-lg border border-cyan-100 bg-white/60 px-2.5 py-1 text-xs font-medium text-slate-500 transition hover:border-cyan-200 hover:text-slate-800"
           aria-label="Close insights panel"
         >
-          ✕
+          Close
         </button>
       </div>
 
       <div className="flex-1 overflow-y-auto p-3">
         {!target ? (
           <div className="mt-8 flex flex-col items-center gap-3 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#7c3aed22,#0891b222)] text-xl">
-              ✦
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#7c3aed22,#0891b222)] text-xs font-semibold uppercase tracking-[0.18em] text-purple-700">
+              AI
             </div>
             <p className="text-sm font-medium text-slate-500">
               Select a location and click<br />
