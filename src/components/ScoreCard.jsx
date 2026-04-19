@@ -10,7 +10,7 @@ const RANK_COLORS = {
   5: '#ef4444',
 };
 
-export default function ScoreCard({ location, isActive, onClick, context = {}, onLoadHeatmap }) {
+export default function ScoreCard({ location, isActive, onClick, context = {}, onLoadHeatmap, onOpenInsights }) {
   const [saveStatus, setSaveStatus] = useState(null);
   const [heatmapStatus, setHeatmapStatus] = useState('idle');
   const rank = location.rank ?? '-';
@@ -43,34 +43,69 @@ export default function ScoreCard({ location, isActive, onClick, context = {}, o
   }
 
   const saveLabel =
-    saveStatus === 'ok' ? '✅ Saved!' : saveStatus === 'err' ? '❌ Failed' : '💾 Save Location';
+    saveStatus === 'ok' ? 'Saved' : saveStatus === 'err' ? 'Failed' : 'Save Location';
+  const hasPopulation = location.population !== undefined && location.population !== null;
+  const hasIncome = location.medianIncome !== undefined && location.medianIncome !== null;
+  const locationMeta = [
+    {
+      label: 'Income',
+      value: hasIncome ? `$${location.medianIncome.toLocaleString()}` : 'Data unavailable',
+    },
+    {
+      label: 'Anchor',
+      value: location.nearestAnchor || '—',
+    },
+    {
+      label: 'Competitors',
+      value:
+        location.competitorCount !== undefined && location.competitorCount !== null
+          ? String(location.competitorCount)
+          : '—',
+    },
+  ];
 
   return (
     <div
       onClick={onClick}
-      className={`w-full text-left rounded-lg bg-[#1e293b] border border-[#334155] p-3 cursor-pointer transition-colors hover:border-slate-500 ${
-        isActive ? 'border-l-4 border-l-[#3b82f6]' : ''
+      className={`w-full cursor-pointer rounded-[14px] border p-3 text-left transition duration-200 hover:-translate-y-[1px] ${
+        isActive
+          ? 'border-cyan-200 bg-[linear-gradient(180deg,#f3feff_0%,#ebfdff_100%)] shadow-[0_20px_36px_rgba(8,145,178,0.16)]'
+          : 'border-cyan-100 bg-[rgba(255,255,255,0.88)] shadow-[0_14px_30px_rgba(8,145,178,0.1)] hover:border-cyan-200'
       }`}
     >
-      <div className="flex items-center justify-between mb-2.5">
+      <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span
-            className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold text-white"
-            style={{ backgroundColor: color }}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white shadow-[0_10px_20px_rgba(15,23,42,0.18)]"
+            style={{ background: `linear-gradient(135deg, ${color}, ${color}CC)` }}
           >
             {rank}
           </span>
-          <span className="text-sm font-semibold text-slate-100">Location #{rank}</span>
+          <div>
+            <span className="block text-sm font-semibold text-slate-900">Location #{rank}</span>
+            <span className="block text-[0.68rem] uppercase tracking-[0.18em] text-slate-400">
+              Recommended zone
+            </span>
+          </div>
         </div>
         <div
-          className="w-10 h-10 rounded-full border-2 flex items-center justify-center text-xs font-bold text-slate-100"
-          style={{ borderColor: color }}
+          className="flex h-11 w-11 items-center justify-center rounded-full border bg-white text-xs font-bold text-slate-700"
+          style={{ borderColor: `${color}55` }}
         >
           {total}
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-x-2 gap-y-1.5 mb-3">
+      <div className="mb-2 rounded-[10px] border border-cyan-100 bg-cyan-50/70 px-3 py-2">
+        <div className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-slate-400">
+          Population
+        </div>
+        <div className="mt-0.5 text-sm font-semibold text-slate-800">
+          {hasPopulation ? location.population.toLocaleString() : 'Data unavailable'}
+        </div>
+      </div>
+
+      <div className="mb-3 grid grid-cols-3 gap-x-2 gap-y-1.5">
         <ScoreBar label="Population" score={s.populationScore} maxScore={20} color="#3b82f6" />
         <ScoreBar label="Income" score={s.incomeScore} maxScore={20} color="#22c55e" />
         <ScoreBar label="Anchors" score={s.anchorScore} maxScore={20} color="#eab308" />
@@ -79,19 +114,41 @@ export default function ScoreCard({ location, isActive, onClick, context = {}, o
         <ScoreBar label="Catchment" score={s.catchmentScore} maxScore={20} color="#06b6d4" />
       </div>
 
+      <div className="mb-3 grid grid-cols-3 gap-2">
+        {locationMeta.map((item) => (
+          <div
+            key={item.label}
+            className="rounded-[10px] border border-cyan-100 bg-white/72 px-2.5 py-2"
+          >
+            <div className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-slate-400">
+              {item.label}
+            </div>
+            <div className="mt-1 truncate text-xs font-medium text-slate-700">{item.value}</div>
+          </div>
+        ))}
+      </div>
+
       <button
         type="button"
         onClick={handleSave}
         disabled={saveStatus !== null}
-        className={`w-full text-xs font-medium py-1.5 rounded border transition-colors ${
+        className={`w-full rounded-[10px] border px-3 py-2.5 text-xs font-medium transition ${
           saveStatus === 'ok'
-            ? 'bg-green-500/20 border-green-500/50 text-green-300'
+            ? 'border-green-200 bg-green-50 text-green-700'
             : saveStatus === 'err'
-              ? 'bg-red-500/20 border-red-500/50 text-red-300'
-              : 'bg-[#0f172a] border-[#334155] text-slate-300 hover:border-[#3b82f6] hover:text-white'
+              ? 'border-red-200 bg-red-50 text-red-700'
+              : 'border-cyan-100 bg-cyan-50/60 text-slate-600 hover:border-cyan-200 hover:bg-white hover:text-slate-900'
         }`}
       >
         {saveLabel}
+      </button>
+
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); onOpenInsights?.({ location, context }); }}
+        className="mt-2 w-full rounded-[10px] border border-purple-100 bg-purple-50/60 px-3 py-2.5 text-xs font-medium text-purple-700 transition hover:border-purple-200 hover:bg-white hover:text-purple-900"
+      >
+        Generate Insights
       </button>
 
       {onLoadHeatmap && (
@@ -112,21 +169,22 @@ export default function ScoreCard({ location, isActive, onClick, context = {}, o
           disabled={heatmapStatus === 'loading'}
           style={{
             width: '100%',
-            marginTop: '8px',
-            padding: '8px',
+            marginTop: '10px',
+            padding: '10px 12px',
             background:
               heatmapStatus === 'success'
                 ? '#16a34a'
                 : heatmapStatus === 'error'
                   ? '#dc2626'
-                  : '#7c3aed',
-            border: 'none',
-            borderRadius: '6px',
+                  : 'linear-gradient(135deg,#0f766e 0%,#0891b2 100%)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            borderRadius: '16px',
             color: 'white',
             fontSize: '0.78rem',
             fontWeight: 600,
             cursor: heatmapStatus === 'loading' ? 'not-allowed' : 'pointer',
             opacity: heatmapStatus === 'loading' ? 0.7 : 1,
+            boxShadow: '0 16px 30px rgba(8,145,178,0.2)',
             transition: 'all 0.2s',
           }}
         >
