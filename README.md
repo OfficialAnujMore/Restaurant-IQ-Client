@@ -2,6 +2,17 @@
 
 React frontend for RestaurantIQ, an ArcGIS-powered location intelligence tool for restaurant site selection.
 
+**Repos:** [Server](https://github.com/OfficialAnujMore/Restaurant-IQ-Server)
+
+## Demo
+
+[![RestaurantIQ Demo](https://img.youtube.com/vi/VoYTlok4mdE/maxresdefault.jpg)](https://youtu.be/VoYTlok4mdE?si=1gPWw3Siexrv3Wkb)
+
+![RestaurantIQ Landing Screen](src/assets/Landing.png)
+
+![RestaurantIQ Dashboard Screen](src/assets/Dashboard.png)
+
+
 ## Problem Statement
 
 Finding the right location for a new restaurant is expensive and risky. RestaurantIQ lets operators pick a city, cuisine, and competitive strategy, then scores a grid of candidate locations across demographics, foot traffic, anchor proximity, and competitor density — ranking the top 5 spots and visualizing them on an interactive map.
