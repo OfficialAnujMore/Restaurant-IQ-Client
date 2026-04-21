@@ -12,6 +12,11 @@ React frontend for RestaurantIQ, an ArcGIS-powered location intelligence tool fo
 
 ![RestaurantIQ Dashboard Screen](src/assets/Dashboard.png)
 
+## Contributor
+Yash Kapil Jagani
+LinkedIn: https://www.linkedin.com/in/yash-kapil-jagani-2b28b2208/
+
+
 
 ## Problem Statement
 
@@ -69,3 +74,5 @@ The Vite dev server proxies `/api/*` → `http://localhost:5000`.
 | `npm run build` | Production build to `dist/` |
 | `npm run preview` | Preview production build locally |
 | `npm run lint` | Run ESLint |
+
+
