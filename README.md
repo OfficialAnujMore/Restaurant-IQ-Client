@@ -15,6 +15,7 @@ React frontend for RestaurantIQ, an ArcGIS-powered location intelligence tool fo
 ## Contributor
 Yash Kapil Jagani
 LinkedIn: https://www.linkedin.com/in/yash-kapil-jagani-2b28b2208/
+Github: https://github.com/YashJagani27
 
 
 
